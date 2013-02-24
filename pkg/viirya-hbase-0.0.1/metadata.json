@@ -1,0 +1,35 @@
+{
+  "description": "This module deploys Apache Hbase in fully-distributed mode on a cluster of machines.",
+  "summary": "Deploy Apache Hbase.",
+  "source": "UNKNOWN",
+  "version": "0.0.1",
+  "license": "MIT License",
+  "types": [
+
+  ],
+  "dependencies": [
+    {
+      "version_requirement": "0.0.1",
+      "name": "viirya/java"
+    }
+  ],
+  "checksums": {
+    "manifests/cluster.pp": "dcb28e8a18885e7b9669351c3bb04260",
+    "tests/init.pp": "48873747409767efb54da1196969ade0",
+    "README": "87ec6d0a1cbed783067bc1c85d190d08",
+    "Modulefile": "f0d2a6db41ef27c1776132a78dbd1d18",
+    "templates/etc/common-session.erb": "08835ba7477dec5ade27196fa73393d6",
+    "spec/spec_helper.rb": "a55d1e6483344f8ec6963fcb2c220372",
+    "templates/conf/hbase-site.xml.erb": "63949fd3bbd877f3f24f9ffae524bdd7",
+    "manifests/params.pp": "10970180a5490309a657461f3ce13bc6",
+    "manifests/init.pp": "5f2049c9d26f9c4330bdac56e45ecd31",
+    "templates/conf/regionservers.erb": "140a6d3db733309c77678804b1058bad",
+    "LICENSE": "e37441572d2f74ca884c994b6a9c8834",
+    "templates/etc/limits.conf.erb": "11f6d83563659bbbc6db865f7bd5e20d",
+    "templates/conf/hbase-env.sh.erb": "2b9e8d2de295e6068e815ead930b4ca1",
+    "files/lib/hadoop-jar.tar.gz": "ebcac977feafd0664fb45fe5fbdf29fd"
+  },
+  "name": "viirya-hbase",
+  "project_page": "https://github.com/viirya/puppet-hbase",
+  "author": "Liang-Chi Hsieh"
+}
