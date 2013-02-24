@@ -1,0 +1,13 @@
+
+Put a tarball hadoop-jar.tar.gz that contains hadoop related jar files:
+* hadoop-auth-2.0.3-alpha.jar
+* hadoop-common-2.0.3-alpha.jar
+* hadoop-hdfs-2.0.3-alpha.jar
+* hadoop-mapreduce-client-app-2.0.3-alpha.jar
+* hadoop-mapreduce-client-common-2.0.3-alpha.jar
+* hadoop-mapreduce-client-core-2.0.3-alpha.jar
+* hadoop-mapreduce-client-jobclient-2.0.3-alpha.jar
+* hadoop-yarn-api-2.0.3-alpha.jar
+* hadoop-yarn-common-2.0.3-alpha.jar
+* hadoop-yarn-server-common-2.0.3-alpha.jar
+

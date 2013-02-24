@@ -23,7 +23,7 @@ Since the issue HBASE-7904 of working Hbase with Hadoop 2.0.3 alpha release, if 
 
 Downloading Apache Hbase package (or rebuild the tarball) and putting the tarball under files/. 
 
-You need to put a tarball that contains some hadoop jar files under files/lib/. Contained in this puppet module is the hadoop jar files from Apache Hadoop 2.0.3 alpha. If you use other versions, please generate corresponding one.
+You need to put a tarball that contains some hadoop jar files under files/lib/. 
 
 This puppet module will remove /lib/hadoop-core-1.0.4.jar from untarred hbase directory. If the hadoop jar file contained in your hbase package is not the file, please modify the corresponding object in manifests/init.pp.
 
