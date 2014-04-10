@@ -1,4 +1,3 @@
-
 Puppet module for deploying Hbase in fully-distributed mode
 
 This module deploys Hbase in fully-distributed on a cluster of machines. It is tested with Apache Hbase trunk (built as tarball hbase-0.95-SNAPSHOT.tar.gz) and Apache Hadoop 2.0.3 alpha release (deployed using puppet module viirya/hadoop) under puppet agent/master environment. 
@@ -25,7 +24,7 @@ Downloading Apache Hbase package (or rebuild the tarball) and putting the tarbal
 
 You need to put a tarball that contains some hadoop jar files under files/lib/. 
 
-This puppet module will remove /lib/hadoop-core-1.0.4.jar from untarred hbase directory. If the hadoop jar file contained in your hbase package is not the file, please modify the corresponding object in manifests/init.pp.
+This step is only needed for old hbase distribution: This puppet module will remove /lib/hadoop-core-1.0.4.jar from untarred hbase directory. If the hadoop jar file contained in your hbase package is not the file, please modify the corresponding object in manifests/init.pp.
 
 Please also modify parameters 'version', 'master' and 'slaves' in manifests/params.pp.
 
