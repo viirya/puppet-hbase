@@ -11,10 +11,10 @@ class hbase::cluster::master {
 
     exec { "Start hbase":
         command => "./start-hbase.sh",
-        cwd => "${hbase::params::hbase_base}/hbase-${hbase::params::version}/bin",
-        user => "${hbase::params::hadoop_user}",
+        cwd => "${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}/bin",
+        user => "${hbase::params::hbase_user}",
         alias => "start-hbase",
-        path    => ["/bin", "/usr/bin", "${hbase::params::hbase_base}/hbase-${hbase::params::version}/sbin", "${hbase::params::hbase_base}/hbase-${hbase::params::version}/bin"],
+        path    => ["/bin", "/usr/bin", "${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}/sbin", "${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}/bin"],
     }
  
 }

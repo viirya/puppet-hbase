@@ -5,10 +5,18 @@ class hbase::params {
 	include java::params
 
 	$version = $::hostname ? {
-		default			=> "0.95-SNAPSHOT",
+		default			=> "0.98.1",
 	}
-
- 	$hadoop_user = $::hostname ? {
+ 
+ 	$untar_path = $::hostname ? {
+		default			=> "${version}-hadoop2",
+	}
+ 
+ 	$file = $::hostname ? {
+		default			=> "${version}-hadoop2-bin",
+	}
+ 
+ 	$hbase_user = $::hostname ? {
 		default			=> "hduser",
 	}
  
@@ -17,11 +25,11 @@ class hbase::params {
 	}
         
 	$master = $::hostname ? {
-		default			=> "master.hadoop",
+		default			=> "localhost",
 	}
  
 	$slaves = $::hostname ? {
-		default			=> ["slave01.hadoop", "slave02.hadoop"] 
+		default			=> ["localhost"] 
 	}
  
     $namenode =  $::hostname ? {
@@ -56,8 +64,8 @@ class hbase::params {
 		default			=> "${hbase_base}/hbase/conf",
 	}
  
-    $hadoop_user_path = $::hostname ? {
-		default			=> "/home/${hadoop_user}",
+    $hbase_user_path = $::hostname ? {
+		default			=> "/home/${hbase_user}",
 	}             
 
 }

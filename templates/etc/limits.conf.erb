@@ -53,8 +53,8 @@
 #ftp             -       chroot          /ftp
 #@student        -       maxlogins       4
 
-<%= scope.lookupvar('hdbase::params::hadoop_user') %>           -       nofile          32768
-<%= scope.lookupvar('hdbase::params::hadoop_user') %>           soft    nproc           32000
-<%= scope.lookupvar('hdbase::params::hadoop_user') %>           hard    nproc           32000
+<%= scope.lookupvar('hbase::params::hbase_user') %>           -       nofile          32768
+<%= scope.lookupvar('hbase::params::hbase_user') %>           soft    nproc           32000
+<%= scope.lookupvar('hbase::params::hbase_user') %>           hard    nproc           32000
 
 # End of file
