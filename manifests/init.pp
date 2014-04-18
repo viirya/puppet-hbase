@@ -28,7 +28,51 @@ class hbase {
         alias => "${hbase::params::hbase_user}-home",
         require => [ User["${hbase::params::hbase_user}"], Group["hadoop"] ]
     }
- 
+
+    file { "${hbase::params::hbase_user_path}/.ssh/":
+        owner => "${hbase::params::hbase_user}",
+        group => "${hbase::params::hadoop_group}",
+        mode => "700",
+        ensure => "directory",
+        alias => "${hbase::params::hbase_user}-ssh-dir",
+    }
+
+    file { "${hbase::params::hbase_user_path}/.ssh/id_rsa.pub":
+        ensure => present,
+        owner => "${hbase::params::hbase_user}",
+        group => "${hbase::params::hadoop_group}",
+        mode => "644",
+        source => "puppet:///modules/hbase/ssh/id_rsa.pub",
+        require => File["${hbase::params::hbase_user}-ssh-dir"],
+    }
+
+    file { "${hbase::params::hbase_user_path}/.ssh/id_rsa":
+        ensure => present,
+        owner => "${hbase::params::hbase_user}",
+        group => "${hbase::params::hadoop_group}",
+        mode => "600",
+        source => "puppet:///modules/hbase/ssh/id_rsa",
+        require => File["${hbase::params::hbase_user}-ssh-dir"],
+    }
+
+    file { "${hbase::params::hbase_user_path}/.ssh/config":
+        ensure => present,
+        owner => "${hbase::params::hbase_user}",
+        group => "${hbase::params::hadoop_group}",
+        mode => "600",
+        source => "puppet:///modules/hbase/ssh/config",
+        require => File["${hbase::params::hbase_user}-ssh-dir"],
+    }
+
+    file { "${hbase::params::hbase_user_path}/.ssh/authorized_keys":
+        ensure => present,
+        owner => "${hbase::params::hbase_user}",
+        group => "${hbase::params::hadoop_group}",
+        mode => "644",
+        source => "puppet:///modules/hbase/ssh/id_rsa.pub",
+        require => File["${hbase::params::hbase_user}-ssh-dir"],
+    }
+
     file {"${hbase::params::hbase_base}":
         ensure => "directory",
         owner => "${hbase::params::hbase_user}",
@@ -147,23 +191,43 @@ class hbase {
         content => template("hbase/etc/common-session.erb"),
     }
 
-     exec { "set hbase_home":
-        command => "echo 'export HBASE_HOME=${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}' >> ${hbase::params::hbase_user_path}/.bashrc",
+    exec { "set hbase_home":
+        command => "echo 'export HBASE_HOME=${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}' >> /etc/profile.d/hadoop.sh",
         alias => "set-hbasehome",
-        user => "${hbase::params::hbase_user}",
+        user => "root",
         require => [File["hbase-app-dir"], User["${hbase::params::hbase_user}"]],
         path    => ["/bin", "/usr/bin", "/usr/sbin"],
-        onlyif => "test 0 -eq $(grep -c HIVE_HOME ${hbase::params::hbase_user_path}/.bashrc)",
+        onlyif => "test 0 -eq $(grep -c HBASE_HOME /etc/profile.d/hadoop.sh)",
     }
  
-     exec { "set hbase path":
-        command => "echo 'export PATH=${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}/bin:\$PATH' >> ${hbase::params::hbase_user_path}/.bashrc",
+    exec { "set hbase path":
+        command => "echo 'export PATH=${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}/bin:\$PATH' >> /etc/profile.d/hadoop.sh",
         alias => "set-hbasepath",
-        user => "${hbase::params::hbase_user}",
+        user => "root",
         before => Exec["set-hbasehome"],
         require => [File["hbase-app-dir"], User["${hbase::params::hbase_user}"]],
         path    => ["/bin", "/usr/bin", "/usr/sbin"],
-        onlyif => "test 0 -eq $(grep -c '${hbase::params::hbase_base}/hbase-${hbase::params::file}/bin' ${hbase::params::hbase_user_path}/.bashrc)",
+        onlyif => "test 0 -eq $(grep -c '${hbase::params::hbase_base}/hbase-${hbase::params::file}/bin' /etc/profile.d/hadoop.sh)",
     }
+
+
+    #exec { "set hbase_home":
+    #   command => "echo 'export HBASE_HOME=${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}' >> ${hbase::params::hbase_user_path}/.bashrc",
+    #   alias => "set-hbasehome",
+    #   user => "${hbase::params::hbase_user}",
+    #   require => [File["hbase-app-dir"], User["${hbase::params::hbase_user}"]],
+    #   path    => ["/bin", "/usr/bin", "/usr/sbin"],
+    #   onlyif => "test 0 -eq $(grep -c HBASE_HOME ${hbase::params::hbase_user_path}/.bashrc)",
+    #
+    #
+    #exec { "set hbase path":
+    #   command => "echo 'export PATH=${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}/bin:\$PATH' >> ${hbase::params::hbase_user_path}/.bashrc",
+    #   alias => "set-hbasepath",
+    #   user => "${hbase::params::hbase_user}",
+    #   before => Exec["set-hbasehome"],
+    #   require => [File["hbase-app-dir"], User["${hbase::params::hbase_user}"]],
+    #   path    => ["/bin", "/usr/bin", "/usr/sbin"],
+    #   onlyif => "test 0 -eq $(grep -c '${hbase::params::hbase_base}/hbase-${hbase::params::file}/bin' ${hbase::params::hbase_user_path}/.bashrc)",
+    #
 
 }

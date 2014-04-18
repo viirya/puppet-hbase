@@ -17,7 +17,7 @@ class hbase::params {
 	}
  
  	$hbase_user = $::hostname ? {
-		default			=> "hduser",
+		default			=> "hbase",
 	}
  
  	$hadoop_group = $::hostname ? {
