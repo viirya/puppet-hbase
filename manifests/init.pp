@@ -210,6 +210,14 @@ class hbase {
         onlyif => "test 0 -eq $(grep -c '${hbase::params::hbase_base}/hbase-${hbase::params::file}/bin' /etc/profile.d/hadoop.sh)",
     }
 
+    file { "${hbase::params::hbase_user_path}/.bashrc":        
+        ensure => present,
+        owner => "${hbase::params::hbase_user}",
+        group => "${hbase::params::hadoop_group}",
+        alias => "${hbase::params::hbase_user}-bashrc",
+        content => template("hbase/home/bashrc.erb"),
+        require => User["${hbase::params::hbase_user}"]    
+    }
 
     #exec { "set hbase_home":
     #   command => "echo 'export HBASE_HOME=${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}' >> ${hbase::params::hbase_user_path}/.bashrc",
