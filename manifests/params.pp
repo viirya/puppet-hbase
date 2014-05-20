@@ -5,7 +5,7 @@ class hbase::params {
 	include java::params
 
 	$version = $::hostname ? {
-		default			=> "0.98.1",
+		default			=> "0.98.2",
 	}
  
  	$untar_path = $::hostname ? {
@@ -15,7 +15,11 @@ class hbase::params {
  	$file = $::hostname ? {
 		default			=> "${version}-hadoop2-bin",
 	}
- 
+
+    $download_url = $::hostname ? {
+		default			=> "http://apache.stu.edu.tw/hbase/hbase-${version}",
+	}      
+
  	$hbase_user = $::hostname ? {
 		default			=> "hbase",
 	}
@@ -67,5 +71,17 @@ class hbase::params {
     $hbase_user_path = $::hostname ? {
 		default			=> "/home/${hbase_user}",
 	}             
+ 
+    $kerberos_mode = $::hostname ? {
+        default            => "yes",
+    }
 
+    $keytab_path = $::hostname ? {
+        default            => "/etc/security/keytab",
+    }
+
+    $kerberos_realm = $::hostname ? {
+        default            => "OPENSTACKLOCAL",
+    }
+ 
 }

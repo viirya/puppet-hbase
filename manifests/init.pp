@@ -7,7 +7,7 @@ class hbase {
     group { "${hbase::params::hadoop_group}":
         ensure => present,
         gid => "800",
-        alias => "hadoop",
+        alias => "hbase-group",
     }
     
     user { "${hbase::params::hbase_user}":
@@ -15,10 +15,10 @@ class hbase {
         comment => "Hadoop",
         password => "!!",
         #uid => "800",
-        #gid => "800",
+        gid => "800",
         shell => "/bin/bash",
         home => "${hbase::params::hbase_user_path}",
-        require => Group["hadoop"],
+        require => Group["hbase-group"],
     }
     
     file { "${hbase::params::hbase_user_path}":
@@ -26,7 +26,7 @@ class hbase {
         owner => "${hbase::params::hbase_user}",
         group => "${hbase::params::hadoop_group}",
         alias => "${hbase::params::hbase_user}-home",
-        require => [ User["${hbase::params::hbase_user}"], Group["hadoop"] ]
+        require => [ User["${hbase::params::hbase_user}"], Group["hbase-group"] ]
     }
 
     file { "${hbase::params::hbase_user_path}/.ssh/":
@@ -90,7 +90,7 @@ class hbase {
     }
  
     exec { "download ${hbase::params::hbase_base}/hbase-${hbase::params::file}.tar.gz":
-        command => "wget 'http://apache.stu.edu.tw/hbase/hbase-${hbase::params::version}/hbase-${hbase::params::file}.tar.gz'",
+        command => "wget '${hbase::params::download_url}/hbase-${hbase::params::file}.tar.gz'",
         cwd => "${hbase::params::hbase_base}",
         alias => "download-hbase",
         user => "${hbase::params::hbase_user}",
@@ -217,7 +217,38 @@ class hbase {
         content => template("hbase/home/bashrc.erb"),
         require => User["${hbase::params::hbase_user}"]    
     }
+ 
+ 
+    if $hbase::params::kerberos_mode == "yes" {
+ 
+        file { "${hbase::params::keytab_path}":
+            ensure => "directory",
+            owner => "root",
+            group => "${hbase::params::hadoop_group}",
+            mode => "750",
+            alias => "keytab-path",
+        }
+ 
+       file { "${hbase::params::keytab_path}/hbase.service.keytab":
+            ensure => present,
+            owner => "root",
+            group => "${hbase::params::hadoop_group}",
+            mode => "440",
+            source => "puppet:///modules/hbase/keytab/${fqdn}.hbase.service.keytab",
+            require => File["keytab-path"],
+        }
+ 
+        file { "${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}/conf/jaas.conf":
+            owner => "${hbase::params::hbase_user}",
+            group => "${hbase::params::hadoop_group}",
+            mode => "644",
+            alias => "jaas-cfg",
+            require => File["hbase-app-dir"],
+            content => template("hbase/conf/jaas.conf.erb"),
+        }
 
+    }
+ 
     #exec { "set hbase_home":
     #   command => "echo 'export HBASE_HOME=${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}' >> ${hbase::params::hbase_user_path}/.bashrc",
     #   alias => "set-hbasehome",

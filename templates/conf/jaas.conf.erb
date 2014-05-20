@@ -1,0 +1,23 @@
+
+<% if scope.lookupvar('hbase::params::kerberos_mode') == "yes" %>
+
+Server {
+  com.sun.security.auth.module.Krb5LoginModule required
+  useKeyTab=true
+  storeKey=true
+  useTicketCache=false
+  keyTab="<%= scope.lookupvar('hbase::params::keytab_path') %>/hbase.service.keytab"
+  principal="hbase/<%= @fqdn %>@<%= scope.lookupvar('hbase::params::kerberos_realm') %>";
+};
+
+Client {
+  com.sun.security.auth.module.Krb5LoginModule required
+  useKeyTab=true
+  keyTab="<%= scope.lookupvar('hbase::params::keytab_path') %>/hbase.service.keytab"
+  useTicketCache=false
+  principal="hbase/<%= @fqdn %>@<%= scope.lookupvar('hbase::params::kerberos_realm') %>";
+};
+
+
+<% end %>
+
