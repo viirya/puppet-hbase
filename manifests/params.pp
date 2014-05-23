@@ -29,15 +29,19 @@ class hbase::params {
 	}
         
 	$master = $::hostname ? {
-		default			=> "localhost",
+		default			=> ["test1.openstacklocal", "test2.openstacklocal"]
 	}
  
 	$slaves = $::hostname ? {
-		default			=> ["localhost"] 
+		default			=> ["test3.openstacklocal", "test4.openstacklocal"] 
 	}
+
+    $zookeeper_quorum = $::hostname ? {
+        default         => unique(flatten([$slaves, [$master[1]]])),
+    }
  
     $namenode =  $::hostname ? {
-		default			=> "${master}",
+		default			=> "${master[0]}",
 	}            
  
 	$hdfsport = $::hostname ? {
