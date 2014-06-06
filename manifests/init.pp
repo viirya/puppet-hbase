@@ -174,7 +174,19 @@ class hbase {
         content => template("hbase/conf/regionservers.erb"),
     }
 
-     file { "/etc/security/limits.conf":
+    if $hbase::params::phoenix_version !=  "" {
+        file { "${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}/lib/phoenix-core-${hbase::params::phoenix_version}-incubating.jar":
+            ensure => present,
+            owner => "${hbase::params::hbase_user}",
+            group => "${hbase::params::hadoop_group}",
+            mode => "644",
+            alias => "hbase-phoenix",
+            source => "puppet:///modules/hbase/lib/phoenix-core-${hbase::params::phoenix_version}-incubating.jar",
+            require => [ Exec["untar-hbase"], File["hbase-app-dir"] ],
+        }
+    }
+
+    file { "/etc/security/limits.conf":
         owner => "root",
         group => "root",
         mode => "644",
@@ -229,13 +241,24 @@ class hbase {
             alias => "keytab-path",
         }
  
-       file { "${hbase::params::keytab_path}/hbase.service.keytab":
+        file { "${hbase::params::keytab_path}/hbase.service.keytab":
             ensure => present,
             owner => "root",
             group => "${hbase::params::hadoop_group}",
             mode => "440",
             source => "puppet:///modules/hbase/keytab/${fqdn}.hbase.service.keytab",
             require => File["keytab-path"],
+        }
+ 
+        if member($hbase::params::rest_gateway, $fqdn) {
+            file { "${hbase::params::keytab_path}/hbase_rest.service.keytab":
+                ensure => present,
+                owner => "root",
+                group => "${hbase::params::hadoop_group}",
+                mode => "440",
+                source => "puppet:///modules/hbase/keytab/${fqdn}.hbase_rest.service.keytab",
+                require => File["keytab-path"],
+            }
         }
  
         file { "${hbase::params::hbase_base}/hbase-${hbase::params::untar_path}/conf/jaas.conf":

@@ -22,6 +22,7 @@
  */
 -->
 <configuration>
+
 <property>
   <name>hbase.rootdir</name>
   <value>hdfs://<%= scope.lookupvar('hbase::params::namenode') %>:<%= scope.lookupvar('hbase::params::hdfsport') %>/<%= scope.lookupvar('hbase::params::rootdir') %></value>
@@ -95,13 +96,22 @@
 </property> 
 
 <property> 
-<name>hbase.master.keytab.file</name> 
-<value><%= scope.lookupvar('hbase::params::keytab_path') %>/hbase.service.keytab</value> 
+  <name>hbase.master.keytab.file</name> 
+  <value><%= scope.lookupvar('hbase::params::keytab_path') %>/hbase.service.keytab</value> 
 </property>
 
 <property>    
-    <name>hbase.superuser</name>    
-    <value>hbase</value>    
+  <name>hbase.superuser</name>    
+  <value>hbase</value>    
+</property>
+
+<property>
+  <name>hbase.rest.keytab.file</name>
+  <value><%= scope.lookupvar('hbase::params::keytab_path') %>/hbase_rest.service.keytab</value>
+</property>
+<property>
+  <name>hbase.rest.kerberos.principal</name>
+  <value>hbase_rest/_HOST@<%= scope.lookupvar('hbase::params::kerberos_realm') %></value>
 </property>
 
 <% end %>

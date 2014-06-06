@@ -23,6 +23,29 @@ define hbasekeytab {
     }
 }
  
+define hbaserestprinciple {
+    exec { "create Hbase Rest principle ${name}":
+        command => "kadmin.local -q 'addprinc -randkey hbase_rest/$name@${hbase::params::kerberos_realm}'",
+        user => "root",
+        group => "root",
+        path    => ["/usr/sbin", "/usr/kerberos/sbin", "/usr/bin"],
+        alias => "add-princ-hbase-rest-${name}",
+        onlyif => "test ! -e ${hbase::params::keytab_path}/${name}.hbase_rest.service.keytab",
+    }
+}
+ 
+define hbaserestkeytab {
+    exec { "create Hbase Rest keytab ${name}":
+        command => "kadmin.local -q 'ktadd -k ${hbase::params::keytab_path}/${name}.hbase_rest.service.keytab hbase_rest/$name@${hbase::params::kerberos_realm}'",
+        user => "root",
+        group => "root",
+        path    => ["/usr/sbin", "/usr/kerberos/sbin", "/usr/bin"],
+        onlyif => "test ! -e ${hbase::params::keytab_path}/${name}.hbase_rest.service.keytab",
+        alias => "create-keytab-hbase-rest-${name}",
+        require => [ Exec["add-princ-hbase-rest-${name}"] ],
+    }
+}
+ 
 class hbase::cluster {
 	# do nothing, magic lookup helper
 }
@@ -50,11 +73,19 @@ class hbase::cluster::kerberos {
             require => File["keytab-path"],
         }
  
+        hbaserestprinciple { $hbase::params::rest_gateway: 
+            require => File["keytab-path"],
+        }
+ 
         hbasekeytab { $hbase::params::master: 
             require => File["keytab-path"],
         }
  
         hbasekeytab { $hbase::params::slaves: 
+            require => File["keytab-path"],
+        }
+ 
+        hbaserestkeytab { $hbase::params::rest_gateway: 
             require => File["keytab-path"],
         }
 

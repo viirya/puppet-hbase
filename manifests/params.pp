@@ -16,7 +16,7 @@ class hbase::params {
 		default			=> "${version}-hadoop2-bin",
 	}
 
-    $download_url = $::hostname ? {
+        $download_url = $::hostname ? {
 		default			=> "http://apache.stu.edu.tw/hbase/hbase-${version}",
 	}      
 
@@ -31,9 +31,13 @@ class hbase::params {
 	$master = $::hostname ? {
 		default			=> ["test1.openstacklocal", "test2.openstacklocal"]
 	}
+
+    $rest_gateway = $::hostname ? {
+            default                 => ["test1.openstacklocal"]
+    }
  
 	$slaves = $::hostname ? {
-		default			=> ["test3.openstacklocal", "test4.openstacklocal"] 
+		default			=> ["test3.openstacklocal", "test4.openstacklocal", "test5.openstacklocal"] 
 	}
 
     $zookeeper_quorum = $::hostname ? {
@@ -73,19 +77,23 @@ class hbase::params {
 	}
  
     $hbase_user_path = $::hostname ? {
-		default			=> "/home/${hbase_user}",
-	}             
- 
+        default			=> "/home/${hbase_user}",
+    }             
+    
     $kerberos_mode = $::hostname ? {
         default            => "yes",
     }
-
+    
     $keytab_path = $::hostname ? {
         default            => "/etc/security/keytab",
     }
-
+    
     $kerberos_realm = $::hostname ? {
         default            => "OPENSTACKLOCAL",
+    }
+    
+    $phoenix_version = $::hostname ? {
+        default            => "4.0.0",
     }
  
 }
